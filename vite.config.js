@@ -5,7 +5,7 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   base:
     process.env.NODE_ENV === "production"
-      ? "/hexschool-react-week3-assignment/"
+      ? "/hexschool-react-week4-assignment/"
       : "/",
   plugins: [react()],
 });
