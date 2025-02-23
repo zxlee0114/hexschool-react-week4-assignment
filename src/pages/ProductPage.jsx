@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { Modal } from "bootstrap";
 import Pagination from "../components/pagination";
 import ProductModal from "../components/ProductModal";
+import DelProductModal from "../components/DelProductModal";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_PATH = import.meta.env.VITE_API_PATH;
@@ -24,6 +24,9 @@ const defaultModalState = {
 function ProductPage({ setIsAuth }) {
   const [products, setProducts] = useState([]);
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [isDelProductModalOpen, setIsDelProductModalOpen] = useState(false);
+  const [tempProduct, setTempProduct] = useState(defaultModalState);
+  const [pageInfo, setPageInfo] = useState({});
 
   const getProducts = useCallback(
     async (page = 1) => {
@@ -83,14 +86,7 @@ function ProductPage({ setIsAuth }) {
     checkUserLogin();
   }, [checkUserLogin]);
 
-  const delProductModalRef = useRef(null);
   const [modalMode, setModalMode] = useState(null);
-
-  useEffect(() => {
-    new Modal(delProductModalRef.current, {
-      backdrop: false,
-    });
-  }, []);
 
   const handleOpenProductModal = (mode, product) => {
     setModalMode(mode);
@@ -113,43 +109,8 @@ function ProductPage({ setIsAuth }) {
 
   const handleOpenDelProductModal = (product) => {
     setTempProduct(product);
-    const modalInstance = Modal.getInstance(delProductModalRef.current);
-    modalInstance.show();
+    setIsDelProductModalOpen(true);
   };
-  const handleCloseDelProductModal = () => {
-    const modalInstance = Modal.getInstance(delProductModalRef.current);
-    modalInstance.hide();
-  };
-
-  const [tempProduct, setTempProduct] = useState(defaultModalState);
-
-  const deleteProduct = async () => {
-    try {
-      await axios.delete(
-        `${BASE_URL}/v2/api/${API_PATH}/admin/product/${tempProduct.id}`
-      );
-    } catch (error) {
-      console.log(error);
-      alert("刪除產品失敗");
-    }
-  };
-
-  const handleDeleteProduct = async () => {
-    try {
-      await deleteProduct();
-      getProducts();
-      handleCloseDelProductModal();
-    } catch (error) {
-      console.log(error);
-      alert("刪除產品失敗");
-    }
-  };
-
-  const [pageInfo, setPageInfo] = useState({});
-
-  // const handlePageChange = (page) => {
-  //   getProducts(page);
-  // };
 
   return (
     <>
@@ -230,48 +191,12 @@ function ProductPage({ setIsAuth }) {
         setIsOpen={setIsProductModalOpen}
       />
 
-      <div
-        ref={delProductModalRef}
-        className="modal fade"
-        id="delProductModal"
-        tabIndex="-1"
-        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5">刪除產品</h1>
-              <button
-                onClick={handleCloseDelProductModal}
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">
-              你是否要刪除
-              <span className="text-danger fw-bold">{tempProduct.title}</span>
-            </div>
-            <div className="modal-footer">
-              <button
-                onClick={handleCloseDelProductModal}
-                type="button"
-                className="btn btn-secondary"
-              >
-                取消
-              </button>
-              <button
-                onClick={handleDeleteProduct}
-                type="button"
-                className="btn btn-danger"
-              >
-                刪除
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <DelProductModal
+        getProducts={getProducts}
+        tempProduct={tempProduct}
+        isOpen={isDelProductModalOpen}
+        setIsOpen={setIsDelProductModalOpen}
+      />
     </>
   );
 }
