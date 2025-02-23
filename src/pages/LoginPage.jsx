@@ -3,7 +3,12 @@ import axios from "axios";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-function Login({ getProducts }) {
+function LoginPage({ setIsAuth }) {
+  const [account, setAccount] = useState({
+    username: "example@test.com",
+    password: "example",
+  });
+
   const handleLogin = async (e) => {
     e.preventDefault();
 
@@ -15,18 +20,12 @@ function Login({ getProducts }) {
 
       axios.defaults.headers.common["Authorization"] = token;
 
-      getProducts();
-
       setIsAuth(true);
     } catch (error) {
       console.log(error);
       alert("登入失敗");
     }
   };
-  const [account, setAccount] = useState({
-    username: "example@test.com",
-    password: "example",
-  });
 
   const handleInputChange = (e) => {
     const { value, name } = e.target;
@@ -72,4 +71,4 @@ function Login({ getProducts }) {
   );
 }
 
-export default Login;
+export default LoginPage;
