@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { Modal } from "bootstrap";
+import Pagination from "../components/pagination";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 const API_PATH = import.meta.env.VITE_API_PATH;
@@ -237,9 +238,9 @@ function ProductPage({ setIsAuth }) {
 
   const [pageInfo, setPageInfo] = useState({});
 
-  const handlePageChange = (page) => {
-    getProducts(page);
-  };
+  // const handlePageChange = (page) => {
+  //   getProducts(page);
+  // };
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
@@ -330,57 +331,7 @@ function ProductPage({ setIsAuth }) {
             </table>
           </div>
         </div>
-        <div className="d-flex justify-content-center">
-          <nav>
-            <ul className="pagination">
-              <li className={`page-item ${!pageInfo.has_pre && "disabled"}`}>
-                <a
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(pageInfo.current_page - 1);
-                  }}
-                  className="page-link"
-                  href="#"
-                >
-                  上一頁
-                </a>
-              </li>
-
-              {Array.from({ length: pageInfo.total_pages }).map((_, index) => (
-                <li
-                  className={`page-item ${
-                    pageInfo.current_page === index + 1 && "active"
-                  }`}
-                  key={index}
-                >
-                  <a
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(index + 1);
-                    }}
-                    className="page-link"
-                    href="#"
-                  >
-                    {index + 1}
-                  </a>
-                </li>
-              ))}
-
-              <li className={`page-item ${!pageInfo.has_next && "disabled"}`}>
-                <a
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handlePageChange(pageInfo.current_page + 1);
-                  }}
-                  className="page-link"
-                  href="#"
-                >
-                  下一頁
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
+        <Pagination pageInfo={pageInfo} getProducts={getProducts} />
       </div>
 
       <div
