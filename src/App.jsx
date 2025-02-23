@@ -1,7 +1,6 @@
 import { useState } from "react";
 import LoginPage from "./pages/LoginPage";
 import ProductPage from "./pages/ProductPage";
-// import Pagination from "./components/pagination";
 
 function App() {
   const [isAuth, setIsAuth] = useState(false);
